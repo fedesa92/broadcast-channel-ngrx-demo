@@ -17,10 +17,7 @@ import { LessonsEffects } from '../data-access/lessons.effects';
     StoreModule.forFeature(lessonsFeature),
     EffectsModule.forFeature([LessonsEffects]),
     RouterModule.forChild([
-      {
-        path: '',
-        component: LessonsListComponent,
-      },
+      { path: '', component: LessonsListComponent }
     ]),
   ],
 })

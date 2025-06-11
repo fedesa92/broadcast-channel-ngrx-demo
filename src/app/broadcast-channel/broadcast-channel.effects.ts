@@ -14,40 +14,40 @@ import { BroadcastChannelService } from './broadcast-channel.service';
 
 @Injectable()
 export class BroadcastChannelEffects implements OnInitEffects {
-  broadcastActions$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(
-          ...this.bcActions,
-          broadcastChannelActions.requestInitialState,
-          broadcastChannelActions.sendBackInitialState
-        ),
-        tap((action) => this.bcService.postMessage(action))
-      ),
-    { dispatch: false }
-  );
+  // broadcastActions$ = createEffect(
+  //   () =>
+  //     this.actions$.pipe(
+  //       ofType(
+  //         ...this.bcActions,
+  //         broadcastChannelActions.requestInitialState,
+  //         broadcastChannelActions.sendBackInitialState
+  //       ),
+  //       tap((action) => this.bcService.postMessage(action))
+  //     ),
+  //   { dispatch: false }
+  // );
 
-  onMessage$ = createEffect(() =>
-    this.bcService.onMessage$.pipe(
-      filter(
-        ({ type }) => type !== broadcastChannelActions.requestInitialState.type
-      ),
-      map((action) => ({
-        ...action,
-        type: `[Broadcasted ${action.type.replace(/\[/g, '')}`,
-      }))
-    )
-  );
+  // onMessage$ = createEffect(() =>
+  //   this.bcService.onMessage$.pipe(
+  //     filter(
+  //       ({ type }) => type !== broadcastChannelActions.requestInitialState.type
+  //     ),
+  //     map((action) => ({
+  //       ...action,
+  //       type: `[Broadcasted ${action.type.replace(/\[/g, '')}`,
+  //     }))
+  //   )
+  // );
 
-  onRequestInitialState$ = createEffect(() =>
-    this.bcService.onMessage$.pipe(
-      ofType(broadcastChannelActions.requestInitialState),
-      concatLatestFrom(() => this.store.select((state) => state)),
-      map(([, state]) =>
-        broadcastChannelActions.sendBackInitialState({ state })
-      )
-    )
-  );
+  // onRequestInitialState$ = createEffect(() =>
+  //   this.bcService.onMessage$.pipe(
+  //     ofType(broadcastChannelActions.requestInitialState),
+  //     concatLatestFrom(() => this.store.select((state) => state)),
+  //     map(([, state]) =>
+  //       broadcastChannelActions.sendBackInitialState({ state })
+  //     )
+  //   )
+  // );
 
   ngrxOnInitEffects() {
     return broadcastChannelActions.requestInitialState();

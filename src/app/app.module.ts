@@ -41,7 +41,7 @@ import { bcStateInitializer } from './broadcast-channel/broadcast-channel.meta-r
         lessonsActions.assignLessonSuccess,
         lessonsActions.deleteLessonSuccess,
         studentsActions.addStudentSuccess,
-        studentsActions.deleteStudentSuccess,
+        studentsActions.deleteStudentSuccess
       ],
     },
   ],

@@ -21,7 +21,14 @@ import { RouterModule } from '@angular/router';
             (m) => m.FeatureListModule
           ),
       },
-    ]),
+      { 
+        path: 'counter',
+        loadChildren: () =>
+          import('src/app/test-broadcast-and-ng-rx/test-broadcast-and-ng-rx.module').then(
+            (m) => m.CounterModule
+          )
+      }
+    ])
   ],
 })
 export class AppRoutingModule {}
