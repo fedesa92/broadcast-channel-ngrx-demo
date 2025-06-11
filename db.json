@@ -148,24 +148,6 @@
   ],
   "lessons": [
     {
-      "id": 8,
-      "name": "How to become a Central Mobility Liaison",
-      "status": "active",
-      "userId": 2
-    },
-    {
-      "id": 9,
-      "name": "How to become a Human Directives Assistant",
-      "status": "active",
-      "userId": 7
-    },
-    {
-      "id": 10,
-      "name": "How to become a Dynamic Division Architect",
-      "status": "active",
-      "userId": 30
-    },
-    {
       "id": 11,
       "name": "How to become a Corporate Applications Director",
       "status": "active",

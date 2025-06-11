@@ -1,6 +1,5 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { Action, Store } from '@ngrx/store';
-import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,15 +7,18 @@ import { Subject } from 'rxjs';
 export class BroadcastChannelService implements OnDestroy {
   private readonly broadcastChannel: BroadcastChannel;
 
-  constructor(private store: Store) {
+  constructor(private store: Store, private ngZone: NgZone) {
     this.broadcastChannel =  new BroadcastChannel('counter_channel');
     this.broadcastChannel.onmessage = (event: MessageEvent) => {
       const action = event.data;
-      if (action?.type) {
+      if (action?.type && action.source !== 'broadcast') {
+        const withSource = { ...action, source: 'broadcast' };
         console.log('[BroadcastChannel] Received action:', action);
-        this.store.dispatch(action);
 
-        //nel caso chiamare -->  broadcast(action: Action)
+        // Avvolge nel contesto di Angular
+        this.ngZone.run(() => {
+          this.store.dispatch(withSource);
+        });
       }
     };
   }
