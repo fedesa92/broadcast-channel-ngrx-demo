@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { AppState } from "./test-broadcast-and-ng-rx.reducer";
+import { AppState } from "./broadcast.reducer";
 
 export const selectCounterFeatureState = createFeatureSelector<AppState>("testFeature");
 
