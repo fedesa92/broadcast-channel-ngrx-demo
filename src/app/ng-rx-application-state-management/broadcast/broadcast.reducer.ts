@@ -19,7 +19,6 @@ export const testFeatureReducer = createReducer(
       lastBroadcastAction: {
         actionType: action.actionType,
         payload: { ...action.payload }, // <-- forza un nuovo oggetto
-        // receivedAt: new Date(action.payload.timestamp)   // <-- oppure aggiungi un timestamp unico
         receivedAt: Date.now() // anche solo questo forza il cambio
       }
     };

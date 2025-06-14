@@ -21,7 +21,7 @@ import { selectAllRows } from 'src/app/ng-rx-application-state-management/table/
     <ag-grid-angular
       style="width: 100%; height: 400px;"
       class="ag-theme-alpine"
-      [rowData]="rowData$ | async"
+      [rowData]="rowDataResultSet"
       [columnDefs]="columnDefs"
       [defaultColDef]="{ flex: 1 }"
     >
@@ -30,13 +30,19 @@ import { selectAllRows } from 'src/app/ng-rx-application-state-management/table/
   `
 })
 export class TabAComponent implements OnInit {
-  rowData$ = this.store.select(selectAllRows);
+  private _rowData$ = this.store.select(selectAllRows);
+
+  rowDataResultSet: {
+    id: number;
+    name: string;
+  }[];
   columnDefs = [{ field: 'id' }, { field: 'name' }];
 
   lastAction: any | null;
 
   constructor(private store: Store, private _cdr: ChangeDetectorRef) {
     this.lastAction = null;
+    this.rowDataResultSet = [];
   }
 
   ngOnInit(): void {
@@ -46,8 +52,15 @@ export class TabAComponent implements OnInit {
       console.log('TabA received:', payload);
       this.lastAction = payload;
 
+      if (actionType === 'ADD_ROW'){
+         this.rowDataResultSet = [...this.rowDataResultSet, payload];
+      } else if (actionType === 'REMOVE_ROW') {
+        
+      }
+
       this._cdr.detectChanges();
     });
+
   }
 
   sendUpdate() {
@@ -61,6 +74,7 @@ export class TabAComponent implements OnInit {
 
   addRowA() {
     const row = { id: Date.now(), name: `Item ${Date.now()}` };
+    this.rowDataResultSet = [...this.rowDataResultSet, row];
     this.store.dispatch(broadcastSendAction({ actionType: 'ADD_ROW', payload: row }));
   }
 }

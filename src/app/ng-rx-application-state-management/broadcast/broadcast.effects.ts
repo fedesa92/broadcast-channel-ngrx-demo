@@ -39,7 +39,7 @@ export class BroadcastEffects {
       })
     ),
   );
-
+    
   constructor(
     private actions$: Actions,
     private broadcastChannelService: BroadcastChannelService

@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { filter, Observable } from 'rxjs';
 import { selectLastBroadcastAction } from 'src/app/ng-rx-application-state-management/broadcast/broadcast.selector';
 import { CommonModule } from '@angular/common';
-import { broadcastSendAction } from '../../ng-rx-application-state-management/broadcast/broadcast.actions';
+import { broadcastReceivedAction, broadcastSendAction } from '../../ng-rx-application-state-management/broadcast/broadcast.actions';
 import { AgGridModule } from 'ag-grid-angular';
 import { selectAllRows } from 'src/app/ng-rx-application-state-management/table/table.selectors';
 import { addRow, removeRow } from 'src/app/ng-rx-application-state-management/table/table.actions';
@@ -22,25 +22,30 @@ import { addRow, removeRow } from 'src/app/ng-rx-application-state-management/ta
     <ag-grid-angular
       style="width: 100%; height: 400px;"
       class="ag-theme-alpine"
-      [rowData]="rowData"
+      [rowData]="rowDataResultSet"
       [columnDefs]="columnDefs"
       [defaultColDef]="{ flex: 1 }"
     >
     </ag-grid-angular>
 
-    <button (click)="addRow()">Add Row from Tab B</button>
+    <button (click)="addRowB()">Add Row from Tab B</button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TabBComponent implements OnInit {
-  rowData: { id: number; name: string; }[];
+  private _rowData$ = this.store.select(selectAllRows);
+
+  rowDataResultSet: {
+    id: number;
+    name: string;
+  }[];
   columnDefs = [{ field: 'id' }, { field: 'name' }];
 
   lastAction: any | null;
 
   constructor(private store: Store, private _cdr: ChangeDetectorRef) {
     this.lastAction = null;
-    this.rowData = [];
+    this.rowDataResultSet = [];
   }
 
   ngOnInit(): void {
@@ -49,14 +54,15 @@ export class TabBComponent implements OnInit {
     ).subscribe(({ actionType, payload }) => {
       console.log('TabB received:', payload);
       this.lastAction = payload;
+
+      if (actionType === 'ADD_ROW') {
+        this.rowDataResultSet = [...this.rowDataResultSet, payload];
+      } else if (actionType === 'REMOVE_ROW') {
+
+      }
+
       this._cdr.detectChanges();
     });
-
-    this.store.select(selectAllRows).pipe(
-      filter((filteredValue: any) => filteredValue !== undefined)
-    ).subscribe((value) => {
-      this.rowData = value;
-    })
   }
 
   sendUpdate() {
@@ -68,8 +74,9 @@ export class TabBComponent implements OnInit {
     );
   }
 
-  addRow() {
+  addRowB() {
     const row = { id: Date.now(), name: `Item ${Date.now()}` };
+    this.rowDataResultSet = [...this.rowDataResultSet, row];
     this.store.dispatch(broadcastSendAction({ actionType: 'ADD_ROW', payload: row }));
   }
 }
