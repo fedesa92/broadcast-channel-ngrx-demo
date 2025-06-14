@@ -8,7 +8,7 @@ interface BroadcastEvent {
 }
 
 @Injectable({ providedIn: 'root' })
-export class BroadcastService implements OnDestroy {
+export class BroadcastChannelService implements OnDestroy {
   private channel: BroadcastChannel;
   private events$ = new Subject<BroadcastEvent>();
   private readonly tabId = this.generateTabId();

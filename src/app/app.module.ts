@@ -2,20 +2,19 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
-
+import { RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
 import { API_URL } from './shared/tokens/api-url.token';
-import { BROADCAST_CHANNEL_ACTIONS } from './broadcast-channel/broadcast-channel-actions.token';
-import { lessonsActions } from './lessons/data-access/lessons.actions';
-import { studentsActions } from './students/data-access/students.actions';
-import { BroadcastChannelEffects } from './broadcast-channel/broadcast-channel.effects';
-import { bcStateInitializer } from './broadcast-channel/broadcast-channel.meta-reducer';
+import { TableModule } from './ng-rx-application-state-management/table/table.module';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { metaReducers, reducers } from './ng-rx-application-state-management';
+import { BroadcastModule } from './ng-rx-application-state-management/broadcast/broadcast.module';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,23 +26,29 @@ import { bcStateInitializer } from './broadcast-channel/broadcast-channel.meta-r
     OverlayModule,
     FormsModule,
     ReactiveFormsModule,
-    StoreModule.forRoot({}, { metaReducers: [bcStateInitializer] }),
-    EffectsModule.forRoot([BroadcastChannelEffects]),
+    EffectsModule.forRoot([]),
+    TableModule.forRoot(),
+    BroadcastModule.forRoot(),
+    StoreModule.forRoot(reducers, {
+            metaReducers,
+            runtimeChecks: {
+                strictStateImmutability: true,
+                strictActionImmutability: true,
+                strictActionSerializability: false,
+                strictStateSerializability: false
+            }
+        }),
+        StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+        StoreRouterConnectingModule.forRoot({
+            stateKey: 'router',
+            routerState: RouterState.Minimal
+        })
   ],
   providers: [
     {
       provide: API_URL,
-      useValue: environment.api_url,
-    },
-    {
-      provide: BROADCAST_CHANNEL_ACTIONS,
-      useValue: [
-        lessonsActions.assignLessonSuccess,
-        lessonsActions.deleteLessonSuccess,
-        studentsActions.addStudentSuccess,
-        studentsActions.deleteStudentSuccess
-      ],
-    },
+      useValue: environment.api_url
+    }
   ],
   bootstrap: [AppComponent],
 })
